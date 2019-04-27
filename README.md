@@ -1,7 +1,7 @@
 # MEOW Proxy
 
-当前版本：1.3.3.1 beta [CHANGELOG](CHANGELOG)
-[![Build Status](https://travis-ci.org/renzhn/MEOW.png?branch=master)](https://travis-ci.org/renzhn/MEOW)
+当前版本：1.5 [CHANGELOG](CHANGELOG.md)
+[![Build Status](https://travis-ci.org/netheril96/MEOW.png?branch=master)](https://travis-ci.org/netheril96/MEOW)
 
 <pre>
        /\
@@ -10,36 +10,20 @@
    \(__)|      国内网站直接连接，其他的网站使用代理连接
 </pre>
 
-## 更新说明
-- 2015-11-22 Version 1.3.3
+## 与原版MEOW的差别
 
-       * 增加 `reject` 拒绝连接列表
-       * 支持作为 HTTPS 服务器监听
-       * 支持 HTTPS 服务器作为父代理
-	
-	
-- 2015-10-09 Version 1.3.2
+* 本代码仓库删除了编译好的二进制文件，大大减少了git clone时的传输大小
+* IPv6一律走直连（对于教育网用户很有用）
 
-       * 完全托管在 github，不再使用 meowproxy.me 域名，[新的下载地址](https://github.com/renzhn/MEOW/tree/gh-pages/dist/)
-
-- 2015-08-23 Version 1.3.1
-
-       * 去除了端口限制
-       * 使用最新的 Go 1.5 编译
-
-- 2015-07-16 Version 1.3
-
-       更新了默认的直连列表、加入了强制使用代理列表，强烈推荐旧版本用户更新 [direct](https://raw.githubusercontent.com/renzhn/MEOW/master/doc/sample-config/direct) 文件和下载 [proxy](https://raw.githubusercontent.com/renzhn/MEOW/master/doc/sample-config/proxy) 文件（或者重新安装）
+## MEOW 可以用来
+- 作为全局 HTTP 代理（支持 PAC），可以智能分流（直连国内网站、使用代理连接其他网站）
+- 将 SOCKS5 等代理转换为 HTTP 代理，HTTP 代理能最大程度兼容各种软件（可以设置为程序代理）和设备（设置为系统全局代理）
+- 架设在内网（或者公网），为其他设备提供智能分流代理
+- 编译成一个无需任何依赖的可执行文件运行，支持各种平台（Win / Linux / OS X），甚至是树莓派（Linux ARM）
 
 ## 获取
 
-- **OS X, Linux:** 执行以下命令（也可用于更新）
-
-        curl -L git.io/meowproxy | bash
-
-  环境变量 `MEOW_INSTALLDIR` 可以指定安装的路径，若该环境变量不是目录则询问用户
-- **Windows:** [下载地址](https://github.com/renzhn/MEOW/tree/gh-pages/dist/windows/)
-- **从源码安装:** 安装 [Go](http://golang.org/doc/install)，然后 `go get github.com/renzhn/MEOW`
+- **从源码安装:** 安装 [Go](http://golang.org/doc/install)，然后 `go get github.com/netheril96/MEOW`
 
 ## 配置
 
@@ -54,6 +38,8 @@
     # proxy = http://127.0.0.1:8087
     # shadowsocks 上级代理
     # proxy = ss://aes-128-cfb:password@example.server.com:25
+    # HTTPS 上级代理
+    # proxy = https://user:password@example.server.com:port
 
 ## 工作方式
 
@@ -72,7 +58,6 @@
 
 直接连接的域名列表保存在 `~/.meow/direct` (OS X, Linux) 或 `direct.txt` (Windows)
 
-
 匹配域名**按 . 分隔的后两部分**或者**整个域名**，例子：
 
 -  `baidu.com` => `*.baidu.com`
@@ -90,6 +75,8 @@
 ## 致谢
 
 - @cyfdecyf - COW author
+- @renzhn - Original MEOW author
 - Github - Github Student Pack
 - https://www.pandafan.org/pac/index.html - Domain White List
 - https://github.com/Leask/Flora_Pac - CN IP Data
+- https://github.com/17mon/china_ip_list - CN IP Data

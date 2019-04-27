@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	version           = "1.3.3"
+	version           = "1.5"
 	defaultListenAddr = "127.0.0.1:4411"
 )
 
@@ -54,9 +54,10 @@ type Config struct {
 	DirectFile string // direct sites specified by user
 	ProxyFile  string // sites using proxy specified by user
 	RejectFile string
+	CNIPFile   string
 
 	// not configurable in config file
-	PrintVer        bool
+	PrintVer bool
 
 	// not config option
 	saveReqLine bool // for http and meow parent, should save request line from client
@@ -76,6 +77,7 @@ func initConfig(rcFile string) {
 	config.DirectFile = path.Join(config.dir, directFname)
 	config.ProxyFile = path.Join(config.dir, proxyFname)
 	config.RejectFile = path.Join(config.dir, rejectFname)
+	config.CNIPFile = path.Join(config.dir, CNIPFname)
 
 	config.JudgeByIP = true
 
@@ -174,14 +176,12 @@ func (p proxyParser) ProxySocks5(val string) {
 func (pp proxyParser) ProxyHttp(val string) {
 	var userPasswd, server string
 
-	arr := strings.Split(val, "@")
-	if len(arr) == 1 {
-		server = arr[0]
-	} else if len(arr) == 2 {
-		userPasswd = arr[0]
-		server = arr[1]
+	idx := strings.LastIndex(val, "@")
+	if idx == -1 {
+		server = val
 	} else {
-		Fatal("http parent proxy contains more than one @:", val)
+		userPasswd = val[:idx]
+		server = val[idx+1:]
 	}
 
 	if err := checkServerAddr(server); err != nil {
@@ -198,14 +198,12 @@ func (pp proxyParser) ProxyHttp(val string) {
 func (pp proxyParser) ProxyHttps(val string) {
 	var userPasswd, server string
 
-	arr := strings.Split(val, "@")
-	if len(arr) == 1 {
-		server = arr[0]
-	} else if len(arr) == 2 {
-		userPasswd = arr[0]
-		server = arr[1]
+	idx := strings.LastIndex(val, "@")
+	if idx == -1 {
+		server = val
 	} else {
-		Fatal("http parent proxy contains more than one @:", val)
+		userPasswd = val[:idx]
+		server = val[idx+1:]
 	}
 
 	if err := checkServerAddr(server); err != nil {

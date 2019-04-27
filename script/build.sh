@@ -5,11 +5,14 @@ set -e
 cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 
 version=`grep '^version=' ./install.sh | sed -s 's/version=//'`
+go_version=`go version`
 echo "creating MEOW binary version $version"
 
+rm -rf bin
 mkdir -p bin/windows
 
-gox -output="bin/{{.Dir}}-{{.OS}}-{{.Arch}}-$version" -os="darwin linux windows"
+gox -output="bin/{{.Dir}}-{{.OS}}-{{.Arch}}-$version" -os="windows"
+gox -output="bin/{{.Dir}}-{{.OS}}-{{.Arch}}-$version" -osarch="darwin/386 darwin/amd64 linux/386 linux/amd64 linux/arm"
 
 pack() {
     local goos
@@ -53,3 +56,14 @@ pack linux 386
 pack linux arm
 pack windows amd64
 pack windows 386
+
+git config --global user.name "renzhn"
+git config --global user.email "renzhen999@gmail.com"
+
+git checkout gh-pages
+rm -rf dist
+mv bin dist
+git add dist
+git commit -am"version $version $go_version"
+git push -f
+git checkout master
